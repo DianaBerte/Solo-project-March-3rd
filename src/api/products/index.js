@@ -26,4 +26,18 @@ productsRouter.post("/", async (req, res, next) => {
     res.status(201).send({ message: "Yay, you just created a new product!", id: newProduct.id })
 })
 
+productsRouter.get("/", async (req, res, next) => {
+    try {
+        const products = await getProducts()
+        if (req.query && req.query.category) {
+            const filteredProducts = products.filter(product => product.category === req.query.category)
+            res.send(filteredProducts)
+        } else {
+            res.send(products)
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default productsRouter
