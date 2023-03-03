@@ -80,7 +80,7 @@ productsRouter.delete("/:productId", async (req, res, next) => {
 
         if (productsArray.length !== remainingProducts.length) {
             await writeProducts(remainingProducts)
-            res.status(204).send()
+            res.status(204).send({ message: "Product successfully deleted" })
         } else {
             next(createHttpError(404, `Sadly, product with id ${req.params.productId} was not found!`))
         }
