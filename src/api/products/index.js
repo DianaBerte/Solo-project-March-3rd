@@ -23,7 +23,7 @@ productsRouter.post("/", async (req, res, next) => {
     productsArray.push(newProduct)
     await writeProducts(productsArray)
 
-    res.status(201).send({ id: newProduct.id })
+    res.status(201).send({ message: "Yay, you just created a new product!", id: newProduct.id })
 })
 
 export default productsRouter
