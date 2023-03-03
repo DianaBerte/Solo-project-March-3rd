@@ -72,4 +72,21 @@ productsRouter.put("/:productId", async (req, res, next) => {
     }
 })
 
+productsRouter.delete("/:productId", async (req, res, next) => {
+    try {
+        const productsArray = await getProducts()
+
+        const remainingProducts = productsArray.filter(product => product.id !== req.params.productId)
+
+        if (productsArray.length !== remainingProducts.length) {
+            await writeProducts(remainingProducts)
+            res.status(204).send()
+        } else {
+            next(createHttpError(404, `Sadly, product with id ${req.params.productId} was not found!`))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default productsRouter
