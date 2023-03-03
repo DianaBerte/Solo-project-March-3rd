@@ -54,4 +54,22 @@ productsRouter.get("/:productId", async (req, res, next) => {
     }
 })
 
+productsRouter.put("/:productId", async (req, res, next) => {
+    try {
+        const productsArray = await getProducts()
+        const index = productsArray.findIndex(product => product.id === req.params.productId)
+        if (index !== -1) {
+            const oldProduct = productsArray[index]
+            const updatedProduct = { ...oldProduct, ...req.body, updatedAt: new Date() }
+            productsArray[index] = updatedProduct
+            await writeProducts(productsArray)
+            res.send(updatedProduct)
+        } else {
+            next(createHttpError(404, `Sadly, product with id ${req.params.productId} was not found!`))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default productsRouter
