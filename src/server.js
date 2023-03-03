@@ -3,6 +3,7 @@ import listEndpoints from "express-list-endpoints";
 import cors from "cors";
 import { join } from "path";
 import productsRouter from "./api/products/index.js";
+import filesRouter from "./files/index.js";
 
 
 const server = Express();
@@ -18,7 +19,7 @@ server.use(Express.json())
 //**** endpoints ****/
 
 server.use("/products", productsRouter)
-// server.use("/files", filesRouter)
+server.use("/files", filesRouter)
 
 
 //***** error handlers *******/
