@@ -5,7 +5,7 @@ import { extname } from "path";
 
 const filesRouter = Express.Router()
 
-filesRouter.post("/single", multer().single("imageUrl"), async (req, res, next) => {
+filesRouter.post("/upload", multer().single("imageUrl"), async (req, res, next) => {
     try {
         console.log("File:", req.file);
         const originalFileExtension = extname(req.file.originalname);
