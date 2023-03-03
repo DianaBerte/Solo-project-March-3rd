@@ -18,6 +18,7 @@ server.use(Express.json())
 //**** endpoints ****/
 
 server.use("/products", productsRouter)
+// server.use("/files", filesRouter)
 
 
 //***** error handlers *******/
