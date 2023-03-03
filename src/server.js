@@ -4,6 +4,7 @@ import cors from "cors";
 import { join } from "path";
 import productsRouter from "./api/products/index.js";
 import filesRouter from "./files/index.js";
+import reviewsRouter from "./api/reviews/index.js";
 
 
 const server = Express();
@@ -20,6 +21,7 @@ server.use(Express.json())
 
 server.use("/products", productsRouter)
 server.use("/products", filesRouter)
+server.use("/products", reviewsRouter)
 
 
 //***** error handlers *******/
