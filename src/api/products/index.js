@@ -17,13 +17,17 @@ import { getProducts, writeProducts, getReviews } from "../../lib/fs-tools.js";
 const productsRouter = Express.Router()
 
 productsRouter.post("/", async (req, res, next) => {
-    const newProduct = { ...req.body, id: uniqid(), createdAt: new Date(), updatedAt: new Date() }
+    try {
+        const newProduct = { ...req.body, id: uniqid(), createdAt: new Date(), updatedAt: new Date() }
 
-    const productsArray = await getProducts()
-    productsArray.push(newProduct)
-    await writeProducts(productsArray)
+        const productsArray = await getProducts()
+        productsArray.push(newProduct)
+        await writeProducts(productsArray)
 
-    res.status(201).send({ message: "Yay, you just created a new product!", id: newProduct.id })
+        res.status(201).send({ message: "Yay, you just created a new product!", id: newProduct.id })
+    } catch (error) {
+        next(error)
+    }
 })
 
 productsRouter.get("/", async (req, res, next) => {
