@@ -40,4 +40,18 @@ productsRouter.get("/", async (req, res, next) => {
     }
 })
 
+productsRouter.get("/:productId", async (req, res, next) => {
+    try {
+        const productsArray = await getProducts()
+        const foundProduct = productsArray.find(product => product.id === req.params.productId)
+        if (foundProduct) {
+            res.send(foundProduct)
+        } else {
+            next(createHttpError(404, `Sadly, product with id ${req.params.productId} was not found!`))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default productsRouter
