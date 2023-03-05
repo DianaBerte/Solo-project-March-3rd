@@ -42,4 +42,27 @@ reviewsRouter.get("/:productId/reviews", async (req, res, next) => {
     }
 })
 
+reviewsRouter.delete("/:productId/reviews/:reviewId", async (req, res, next) => {
+    try {
+        const products = await getProducts();
+        const i = products.findIndex(product => product.id === req.params.productId)
+        if (i !== -1) {
+            const reviewsArray = await getReviews();
+            const x = reviewsArray.findIndex(review => review.reviewId === req.params.reviewId)
+            if (x !== -1) {
+                const remainingReviews = reviewsArray.filter(review => review.reviewId !== req.params.reviewId)
+                console.log("rem reviews:", remainingReviews)
+                await writeReviews(remainingReviews)
+                res.send({ message: `You successfully deleted review with id ${req.params.reviewId}` })
+            } else {
+                next(createHttpError(404, `Sadly, review with id ${req.params.reviewId} was not found`))
+            }
+        } else {
+            next(createHttpError(404))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default reviewsRouter
