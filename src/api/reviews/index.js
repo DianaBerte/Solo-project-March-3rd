@@ -1,43 +1,45 @@
-// import Express from "express";
-// import uniqid from "uniqid";
-// import createHttpError from "http-errors";
-// import { getReviews, writeReviews } from "../../lib/fs-tools.js";
+import Express from "express";
+import uniqid from "uniqid";
+import createHttpError from "http-errors";
+import { getProducts, getReviews, writeReviews } from "../../lib/fs-tools.js";
 
-// //to get reviews for a certain product you have to filter the reviews by product id
+const reviewsRouter = Express.Router()
 
-// const reviewsRouter = Express.Router()
+reviewsRouter.post("/:productId/reviews", async (req, res, next) => {
+    try {
+        const products = await getProducts();
+        console.log("Products:", products)
+        const i = products.findIndex(product => product.id === req.params.productId)
+        console.log("Index is:", i)
+        if (i !== -1) {
+            const newReview = { ...req.body, reviewId: uniqid(), productId: req.params.productId, createdAt: new Date() }
+            const reviewsArray = await getReviews();
+            reviewsArray.push(newReview)
+            await writeReviews(reviewsArray)
+            res.status(201).send({ message: "Yay, you just posted a new review!", reviewId: newReview.reviewId })
+        } else {
+            next(createHttpError(404, `Sadly, product with id ${req.params.productId} and the related review that you're trying to post was not found`))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
 
-// reviewsRouter.post("/:productId/reviews", async (req, res, next) => {
-//     try {
-//         const newReview = { ...req.body, id: uniqid(), createdAt: new Date(), updatedAt: new Date() }
+// Getting a list of reviews related to a specific product:
+reviewsRouter.get("/:productId/reviews", async (req, res, next) => {
+    try {
+        const products = await getProducts();
+        const i = products.findIndex(product => product.id === req.params.productId)
+        if (i !== -1) {
+            const reviewsArray = await getReviews();
+            const relatedReviews = reviewsArray.filter(review => review.productId === req.params.productId)
+            res.send(relatedReviews)
+        } else {
+            next(createHttpError(404, `Sadly, product with id ${req.params.productId} and the related review was not found`))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
 
-//         const reviewsArray = await getReviews()
-//         reviewsArray.push(newReview)
-//         await writeReviews(reviewsArray)
-
-//         res.status(201).send({ message: "Yay, you just posted a new review!", id: newReview.id })
-//     } catch (error) {
-//         next(error)
-//     }
-// })
-
-// reviewsRouter.get("/reviews", async (req, res, next) => {
-//     try {
-//         const reviews = await getReviews();
-//         res.send(reviews)
-//     } catch (error) {
-//         next(error)
-//     }
-// })
-
-// reviewsRouter.get("/:productId/reviews", async (req, res, next) => {
-//     try {
-//         const reviewsArray = await getReviews()
-//         reviewsArray = reviewsArray.filter(review => review.productId === req.params.productId)
-//         res.send(reviewsArray)
-//     } catch (error) {
-//         next(error)
-//     }
-// })
-
-// export default reviewsRouter
+export default reviewsRouter
