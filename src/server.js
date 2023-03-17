@@ -6,7 +6,7 @@ import productsRouter from "./api/products/index.js";
 import filesRouter from "./files/index.js";
 import reviewsRouter from "./api/reviews/index.js";
 import mongoose from "mongoose";
-
+import { badRequestHandler, notFoundHandler, genericErrorHandler } from "./errorsHandlers.js";
 
 
 const server = Express();
@@ -27,6 +27,10 @@ server.use("/products", reviewsRouter)
 
 
 //***** error handlers *******/
+
+server.use(badRequestHandler)
+server.use(notFoundHandler)
+server.use(genericErrorHandler)
 
 mongoose.connect(process.env.MONGO_URL)
 
