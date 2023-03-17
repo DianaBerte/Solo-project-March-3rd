@@ -2,9 +2,9 @@ import Express from "express";
 import listEndpoints from "express-list-endpoints";
 import cors from "cors";
 import { join } from "path";
-import productsRouter from "./api/products/index.js";
+import productsRouter from "./api/products/MongoIndex.js";
 import filesRouter from "./files/index.js";
-import reviewsRouter from "./api/reviews/index.js";
+// import reviewsRouter from "./api/reviews/index.js";
 import mongoose from "mongoose";
 import { badRequestHandler, notFoundHandler, genericErrorHandler } from "./errorsHandlers.js";
 
@@ -23,7 +23,7 @@ server.use(Express.json())
 
 server.use("/products", productsRouter)
 server.use("/products", filesRouter)
-server.use("/products", reviewsRouter)
+// server.use("/products", reviewsRouter)
 
 
 //***** error handlers *******/
