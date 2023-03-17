@@ -105,4 +105,25 @@ productsRouter.get("/:productId/reviews/:reviewId", async (req, res, next) => {
     }
 })
 
+productsRouter.put("/:productId/reviews/:reviewId", async (req, res, next) => {
+    try {
+        const product = await ProductsModel.findById(req.params.productId)
+        if (product) {
+            const index = product.reviews.findIndex(review => review._id.toString() === req.params.reviewId)
+
+            if (index !== -1) {
+                product.reviews[index] = { ...product.reviews[index].toObject(), ...req.product }
+                await product.save()
+                res.send(product)
+            } else {
+                next(createHttpError(404, `Review with id ${req.params.reviewId} not found :(`))
+            }
+        } else {
+            next(createHttpError(404, `Product with id ${req.params.productId} not found :(`))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default productsRouter
