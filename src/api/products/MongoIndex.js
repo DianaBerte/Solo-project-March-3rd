@@ -2,6 +2,7 @@ import express from "express";
 import createHttpError from "http-errors";
 import q2m from "query-to-mongo";
 import ProductsModel from "./model.js";
+import ReviewsModel from "./model.js";
 
 const productsRouter = express.Router();
 
@@ -49,6 +50,37 @@ productsRouter.delete("/:productId", async (req, res, next) => {
             res.status(204).send()
         } else {
             next(createHttpError(404, `Product with id ${req.params.productId} not found!`))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
+// ********************************************** EMBEDDED CRUD **************************************************
+
+productsRouter.post("/:productId/reviews", async (req, res, next) => {
+    try {
+        const product = await ProductsModel.findById(req.params.productId)
+        if (product) {
+            const newReview = await req.body;
+            product.reviews.push(newReview);
+            await product.save();
+            res.status(201).send(newReview)
+        } else {
+            next(createHttpError(`Product with id ${req.params.productId} not found!`))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
+productsRouter.get("/:productId/reviews", async (req, res, next) => {
+    try {
+        const products = await ProductsModel.findById(req.params.productId)
+        if (products) {
+            res.send(products.reviews)
+        } else {
+            next(createHttpError(404, `Review with id ${req.params.reviewId} not found :(`))
         }
     } catch (error) {
         next(error)
