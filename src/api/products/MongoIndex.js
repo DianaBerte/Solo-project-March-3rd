@@ -87,4 +87,22 @@ productsRouter.get("/:productId/reviews", async (req, res, next) => {
     }
 })
 
+productsRouter.get("/:productId/reviews/:reviewId", async (req, res, next) => {
+    try {
+        const product = await ProductsModel.findById(req.params.productId)
+        if (product) {
+            const foundReview = product.reviews.find(review => review._id.toString() === req.params.reviewId)
+            if (foundReview) {
+                res.send(foundReview)
+            } else {
+                next(createHttpError(404, `Review with id ${req.params.reviewId} not found :(`))
+            }
+        } else {
+            next(createHttpError(404, `Product with id ${req.params.productId} not found :(`))
+        }
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default productsRouter
