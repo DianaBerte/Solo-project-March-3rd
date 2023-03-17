@@ -5,6 +5,8 @@ import { join } from "path";
 import productsRouter from "./api/products/index.js";
 import filesRouter from "./files/index.js";
 import reviewsRouter from "./api/reviews/index.js";
+import mongoose from "mongoose";
+
 
 
 const server = Express();
@@ -26,7 +28,12 @@ server.use("/products", reviewsRouter)
 
 //***** error handlers *******/
 
-server.listen(port, () => {
-    console.table(listEndpoints(server))
-    console.log(`Server is running on port ${port}`)
+mongoose.connect(process.env.MONGO_URL)
+
+mongoose.connection.on("connected", () => {
+    console.log("Successfully connected to MONGO!")
+    server.listen(port, () => {
+        console.table(listEndpoints(server))
+        console.log(`Server is running on port ${port}`)
+    })
 })
