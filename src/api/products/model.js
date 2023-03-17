@@ -24,4 +24,17 @@ const productsSchema = new Schema(
     { timestamps: true }
 )
 
+// *************************** MODEL CUSTOM METHOD **********************
+
+productsSchema.static("findProductsWithReviews", async function (query) {
+    console.log("THIS: ", this)
+    const products = await this.find(query.criteria, query.options.fields)
+        .limit(query.options.limit)
+        .skip(query.options.skip)
+        .sort(query.options.sort)
+        .populate({ path: "reviews", select: "comment rate" })
+    const total = await this.countDocuments(query.criteria)
+    return { products, total }
+})
+
 export default model("Product", productsSchema)

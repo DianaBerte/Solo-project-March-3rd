@@ -16,10 +16,19 @@ productsRouter.post("/", async (req, res, next) => {
     }
 })
 
+productsRouter.get("/", async (req, res, next) => {
+    try {
+        const products = await ProductsModel.find().populate({ path: "reviews", select: "comment rate" })
+        res.send(products)
+    } catch (error) {
+        next(error)
+    }
+})
+
 productsRouter.get("/:productId", async (req, res, next) => {
     try {
         const product = await ProductsModel.findById(req.params.productId)
-        //   .populate({ path: "authors", select: "firstName lastName" })
+            .populate({ path: "reviews", select: "comment rate" })
         if (product) {
             res.send(product)
         } else {
