@@ -18,7 +18,6 @@ const productsSchema = new Schema(
         "imageUrl": { type: String, required: true },
         "price": { type: Number, required: true },
         "category": { type: String },
-        // "reviews": [{ type: Schema.Types.ObjectId, ref: "Review" }],
         "reviews": [reviewsSchema],
     },
     { timestamps: true }
