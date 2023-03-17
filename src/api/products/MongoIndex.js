@@ -112,7 +112,7 @@ productsRouter.put("/:productId/reviews/:reviewId", async (req, res, next) => {
             const index = product.reviews.findIndex(review => review._id.toString() === req.params.reviewId)
 
             if (index !== -1) {
-                product.reviews[index] = { ...product.reviews[index].toObject(), ...req.product }
+                product.reviews[index] = { ...product.reviews[index].toObject(), ...req.body }
                 await product.save()
                 res.send(product)
             } else {
